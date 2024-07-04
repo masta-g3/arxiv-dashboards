@@ -79,7 +79,7 @@ if st.session_state.get("arxiv_title_dict") is None:
 
 def main():
     st.write("# [📚➡📊] Arxiv Paper to Interactive Dashboard")
-    st.caption("Turn any LLM related Arxiv whitepaper into an interactive data dashboard highlighting its most interesting findings.")
+    st.caption("Turn any LLM related Arxiv whitepaper into an interactive data dashboard.")
     arxiv_title_dict = st.session_state.arxiv_title_dict
     arxiv_codes = sorted(list(arxiv_title_dict.keys()))[::-1]
     arxiv_code = st.selectbox("Arxiv Code", options=arxiv_codes, index=arxiv_codes.index("2406.19371"))
