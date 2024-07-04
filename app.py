@@ -1,4 +1,5 @@
 import streamlit.components.v1 as components
+import datetime
 import streamlit as st
 
 import utils as u
@@ -66,9 +67,23 @@ html_template = """<!DOCTYPE html>
 </body>
 </html>"""
 
+
+@st.cache_data(ttl="4hr")
+def get_arxiv_title_dict():
+    return u.get_arxiv_title_dict()
+
+
+if st.session_state.get("arxiv_title_dict") is None:
+    st.session_state.arxiv_title_dict = get_arxiv_title_dict()
+
+
 def main():
-    st.write("# 📚 Arxiv Notes to Interactive Dashboard Summary")
-    arxiv_code = st.text_input("Arxiv Code", value="2406.19371")
+    st.write("# [📚➡📊] Arxiv Paper to Interactive Dashboard")
+    st.caption("Turn any LLM related Arxiv whitepaper into an interactive data dashboard highlighting its most interesting findings.")
+    arxiv_title_dict = st.session_state.arxiv_title_dict
+    arxiv_codes = sorted(list(arxiv_title_dict.keys()))[::-1]
+    arxiv_code = st.selectbox("Arxiv Code", options=arxiv_codes, index=arxiv_codes.index("2406.19371"))
+
 
     if st.button("Submit"):
         with st.spinner("Generating summary..."):
@@ -85,20 +100,29 @@ def main():
             component_placeholder[1].write(mini_content)
 
             content = u.get_extended_notes(arxiv_code, expected_tokens=3000)
+            script = u.get_arxiv_dashboard_script(arxiv_code, "script_content")
+            summary = u.get_arxiv_dashboard_script(arxiv_code, "summary")
+            if not script:
+                ## Check if we got credits.
+                request_count = u.get_daily_arxiv_request_count(datetime.datetime.now().strftime("%Y-%m-%d"))
+                if request_count > 20:
+                    st.error("Too many requests today. Please try again tomorrow!")
+                    return
 
-            res_str = run_instructor_query(
-                p.artifacts_system_prompt,
-                p.artifacts_user_prompt.format(title=title, content=content),
-                llm_model="claude-3-5-sonnet-20240620",
-                temperature=0.8
-            )
+                res_str = run_instructor_query(
+                    p.artifacts_system_prompt,
+                    p.artifacts_user_prompt.format(title=title, content=content),
+                    llm_model="claude-3-5-sonnet-20240620",
+                    temperature=0.8
+                )
+                summary = res_str.split("<summary>")[1].split("</summary>")[0].strip()
+                script = res_str.split("<script>")[1].split("</script>")[0].strip()
+                u.save_arxiv_dashboard_script(arxiv_code, summary, script)
 
             output_placeholder.empty()
-            summary = res_str.split("<summary>")[1].split("</summary>")[0]
-            script = res_str.split("<script>")[1].split("</script>")[0]
 
         html_content = html_template.format(title=title, summary=summary, script=script)
-        components.html(html_content, height=900, scrolling=True)
+        components.html(html_content, height=1000, scrolling=True)
 
 
 if __name__ == '__main__':

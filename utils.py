@@ -126,3 +126,60 @@ def log_request(arxiv_code: str) -> bool:
         print(f"Error in logging visit: {e}")
         return False
     return True
+
+
+def get_daily_arxiv_request_count(date_str: str) -> int:
+    """Get the number of requests for a given date."""
+    engine = create_engine(database_url)
+    with engine.begin() as conn:
+        query = text(
+            f"""
+            SELECT COUNT(DISTINCT arxiv_code)
+            FROM arxiv_dashboards
+            WHERE tstp::date = '{date_str}';
+            """
+        )
+        result = conn.execute(query)
+        count = result.fetchone()[0]
+    engine.dispose()
+    return count
+
+
+def get_arxiv_dashboard_script(arxiv_code: str, sel_col: str = "script_content") -> str:
+    """Query DB to get script for the arxiv dashboard."""
+    engine = create_engine(database_url)
+    with engine.begin() as conn:
+        query = text(
+            f"""
+            SELECT {sel_col}
+            FROM arxiv_dashboards
+            WHERE arxiv_code = '{arxiv_code}';
+            """
+        )
+        result = conn.execute(query)
+        row = result.fetchone()
+        script = row[0] if row else None
+    engine.dispose()
+    return script
+
+def save_arxiv_dashboard_script(arxiv_code: str, summary:str, script: str) -> bool:
+    """Insert a new arxiv dashboard script into the DB."""
+    engine = create_engine(database_url)
+    tstp = pd.to_datetime("now").strftime("%Y-%m-%d %H:%M:%S")
+    with engine.begin() as conn:
+        query = text(
+            """
+            INSERT INTO arxiv_dashboards (arxiv_code, tstp, script_content, summary)
+            VALUES (:arxiv_code, :tstp, :script_content, :summary)
+            """
+        )
+        conn.execute(
+            query,
+            {
+                "arxiv_code": arxiv_code,
+                "tstp": tstp,
+                "script_content": script,
+                "summary": summary,
+            },
+        )
+        return True

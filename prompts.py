@@ -1,17 +1,19 @@
 artifacts_system_prompt = "Your task is to read over a Large Language Model related whitepaper and create a dashboard visualization app capturing its main and most interesting findings."
 
 artifacts_user_prompt = """<visualization_info>
-The assistant can create a summary and a dynamic HTML visualization summarizing the main findings of a white paper. The output consists of two components: a concise summary and a script section containing React and Recharts code for the interactive dashboard.
+You can create a summary and a dynamic HTML visualization summarizing the main findings of a white paper. The output consists of two components: a concise summary and a script section containing React and Recharts code for the interactive dashboard.
 
 # Good visualizations are...
 - Creative and insightful
 - Clear and engaging representations of the paper's key findings
 - Interactive and easy to understand
-- Diverse in chart types (e.g., line charts, bar charts, pie charts, scatter plots)
-- Include at least one non-traditional visualization or interactive element
-- Have axes that are correctly labeled
+- Diverse in chart types
+- Include at least one non-traditional visualization
+- Have axes that are correctly labeled and scaled
 - Presented in simple, accessible language
+- Defines any concepts or terms introduced in the paper
 - Accurate representations of the paper's conclusions
+- Include some unusual, counterintuitive, or unexpected finding
 - Structured in a dashboard-like layout with multiple panels and dense paragraphs
 
 # Don't create visualizations that...
@@ -26,18 +28,18 @@ The assistant can create a summary and a dynamic HTML visualization summarizing 
 # Usage notes
 - Use the specified orange-toned color palette consistently
 - Create 4-6 main findings or interesting points from the paper
-- Include some unusual, counterintuitive, or unexpected finding (even if its not part of the main conclusion)
 - Ensure all visualizations are interactive where appropriate
 - Do not include more than one bar chart, one line chart or one pie chart (chose other visualization types)
 - Use at least one non-conventional interactive visualization (e.g.: Radar, Radial, Treemap, Funnel, Force-Directed, Flow, Heatmaps, Gauge, Box, Joy, Parallel Coordinates, Word Cloud, etc.) 
 - Be creative but make sure your visuals are highly relevant and are correctly labeled / explained
+- Try to not include charts with very few data points, as they might not be very informative 
 - When applicable, pay attention to the range of the chart axes to make sure they help accurately convey the message
 - Make labels generally short and placed correctly so they don't clutter the visualization or overlap with other elements
-- Use the principles of Edward Tufte and Stephen Few to create clear, informative, and visually appealing visualizations
-- Extract precise conclusions directly from the paper content, as well as one unexpected or interesting finding
+- Use the principles of Edward Tufte to create clear, informative, and visually appealing visualizations
+- Extract precise conclusions directly from the paper content, and at least one unexpected or interesting finding
 - Explain any new or technical terms in layman's language
 - Aim for a similar length and depth as the example provided
-- The assistant should produce only the summary and the script section, not the full HTML
+- Produce only the summary and the script section, not the full HTML
 - Do not include any import or export statements
 - Use React.createElement() for all component creation, not JSX syntax
 - Assume React, ReactDOM, and Recharts are available in the global scope
@@ -45,7 +47,7 @@ The assistant can create a summary and a dynamic HTML visualization summarizing 
 - Include the ReactDOM.render() call to mount the main component
 
 <visualization_instructions>
-  When creating a visualization based on a white paper, the assistant should follow these steps:
+  When creating a visualization based on a white paper, you should follow these steps:
 
   1. Read and analyze the white paper thoroughly to identify key findings and interesting points.
   2. Create a concise summary (2-3 sentences) of the entire paper.
@@ -195,7 +197,7 @@ ReactDOM.render(
 </example>
 </examples>
 
-The assistant should produce output in this format, with a summary section and a script section containing the React and Recharts code for the visualization. The full HTML structure is not required, as it will be part of the template.
+You should produce output in this format, with a summary section and a script section containing the React and Recharts code for the visualization. The full HTML structure is not required, as it will be part of the template.
 
 </visualization_info>
 
