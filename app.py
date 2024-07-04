@@ -81,9 +81,10 @@ def main():
     st.write("# [📚➡📊] Arxiv Paper to Interactive Dashboard")
     st.caption("Turn any LLM related Arxiv whitepaper into an interactive data dashboard.")
     arxiv_title_dict = st.session_state.arxiv_title_dict
-    arxiv_codes = sorted(list(arxiv_title_dict.keys()))[::-1]
-    arxiv_code = st.selectbox("Arxiv Code", options=arxiv_codes, index=arxiv_codes.index("2406.19371"))
-
+    arxiv_code_title_map = {f"{code} - {title}":code for code, title in arxiv_title_dict.items()}
+    arxiv_codes_names = sorted(list(arxiv_code_title_map.keys()))[::-1]
+    arxiv_code_name = st.selectbox("Arxiv Code", options=arxiv_codes_names, index=0)
+    arxiv_code = arxiv_code_title_map[arxiv_code_name]
 
     if st.button("Submit"):
         with st.spinner("Generating summary..."):
