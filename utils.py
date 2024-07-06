@@ -162,15 +162,15 @@ def get_arxiv_dashboard_script(arxiv_code: str, sel_col: str = "script_content")
     engine.dispose()
     return script
 
-def save_arxiv_dashboard_script(arxiv_code: str, summary:str, script: str) -> bool:
+def save_arxiv_dashboard_script(arxiv_code: str, summary:str, scratchpad:str, script:str) -> bool:
     """Insert a new arxiv dashboard script into the DB."""
     engine = create_engine(database_url)
     tstp = pd.to_datetime("now").strftime("%Y-%m-%d %H:%M:%S")
     with engine.begin() as conn:
         query = text(
             """
-            INSERT INTO arxiv_dashboards (arxiv_code, tstp, script_content, summary)
-            VALUES (:arxiv_code, :tstp, :script_content, :summary)
+            INSERT INTO arxiv_dashboards (arxiv_code, tstp, script_content, summary, scratchpad)
+            VALUES (:arxiv_code, :tstp, :script_content, :summary, :scratchpad)
             """
         )
         conn.execute(
@@ -180,6 +180,7 @@ def save_arxiv_dashboard_script(arxiv_code: str, summary:str, script: str) -> bo
                 "tstp": tstp,
                 "script_content": script,
                 "summary": summary,
+                "scratchpad": scratchpad,
             },
         )
         return True
