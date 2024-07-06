@@ -6,7 +6,7 @@ import utils as u
 import prompts as p
 from instruct import run_instructor_query
 
-st.set_page_config(page_title="LLM Interactive Summaries", page_icon="📊", layout="wide")
+st.set_page_config(page_title="LLM Arxiv Paper to Data Dashboard", page_icon="🪄", layout="wide")
 
 html_template = """<!DOCTYPE html>
 <html lang="en">
@@ -159,15 +159,15 @@ if st.session_state.get("arxiv_title_dict") is None:
 
 
 def main():
-    st.write("# f(📚) ➡ 📊 // LLM Arxiv Paper to Interactive Dashboard")
+    st.write("# f(📃) ➡ [📊]")
     st.write("Turn any LLM related Arxiv whitepaper into an interactive data dashboard.")
     arxiv_title_dict = st.session_state.arxiv_title_dict
     arxiv_code_title_map = {f"{code} - {title}":code for code, title in arxiv_title_dict.items()}
     arxiv_codes_names = sorted(list(arxiv_code_title_map.keys()))[::-1]
-    arxiv_code_name = st.selectbox("Arxiv Code", options=arxiv_codes_names, index=0)
+    arxiv_code_name = st.selectbox("Arxiv Code", options=arxiv_codes_names, index=0, label_visibility="collapsed")
     arxiv_code = arxiv_code_title_map[arxiv_code_name]
 
-    if st.button("Submit"):
+    if st.button(" 🪄 Generate"):
         with st.spinner("**Generating interactive card (this might take a minute)...**"):
                 output_placeholder = st.empty()
                 u.log_request(arxiv_code)
@@ -219,7 +219,7 @@ def main():
 
         render()
 
-    st.caption("Powered by Claude-3.5-Sonnet 🖤")
+    st.caption("🖤 Powered by Claude-3.5-Sonnet.")
 
 
 if __name__ == '__main__':

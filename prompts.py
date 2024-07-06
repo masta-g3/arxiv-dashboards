@@ -76,7 +76,7 @@ artifacts_user_prompt = """<visualization_info>
   11. Do not include the full HTML structure, as this will be part of the template.
   12. Do not define the Card or Tab related components, as these will be part of the template.
   13. Use React.createElement() for all component creation, avoiding JSX syntax.
-  14. When customizing Recharts components, use only properties explicitly provided by the component's API, and avoid assumptions about data structure or undocumented properties.
+  14. When customizing Recharts components, always define and use your own color array or object instead of relying on an implicit 'colors' property.
   15. Define all chart components before using them in the main dashboard component.
   16. Use consistent naming for the main dashboard component: [WhitePaperName]Dashboard.
   17. Include the ReactDOM.render() call at the end of the script to mount the main component.
