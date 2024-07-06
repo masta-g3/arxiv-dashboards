@@ -159,8 +159,8 @@ if st.session_state.get("arxiv_title_dict") is None:
 
 
 def main():
-    st.write("# [📚➡📊] Arxiv Paper to Interactive Dashboard")
-    st.caption("Turn any LLM related Arxiv whitepaper into an interactive data dashboard.")
+    st.write("# f(📚) ➡ 📊 // LLM Arxiv Paper to Interactive Dashboard")
+    st.write("Turn any LLM related Arxiv whitepaper into an interactive data dashboard.")
     arxiv_title_dict = st.session_state.arxiv_title_dict
     arxiv_code_title_map = {f"{code} - {title}":code for code, title in arxiv_title_dict.items()}
     arxiv_codes_names = sorted(list(arxiv_code_title_map.keys()))[::-1]
@@ -168,7 +168,7 @@ def main():
     arxiv_code = arxiv_code_title_map[arxiv_code_name]
 
     if st.button("Submit"):
-        with st.spinner("Generating interactive card (this might take a minute)..."):
+        with st.spinner("**Generating interactive card (this might take a minute)...**"):
                 output_placeholder = st.empty()
                 u.log_request(arxiv_code)
                 title = u.get_arxiv_title_dict()[arxiv_code]
@@ -177,7 +177,7 @@ def main():
                 component_placeholder = output_placeholder.columns((1.2, 4, 3, 1.2))
                 arxiv_link = u.get_img_link_for_blob(f"arxiv:{arxiv_code}")
                 component_placeholder[2].image(arxiv_link)
-                component_placeholder[1].write(f"**{title}**")
+                component_placeholder[1].write(f"#### {title}")
                 component_placeholder[1].write(mini_content)
 
                 content = u.get_extended_notes(arxiv_code, expected_tokens=3000)
@@ -187,7 +187,7 @@ def main():
                 if not script:
                     # Check if we got credits.
                     request_count = u.get_daily_arxiv_request_count(datetime.datetime.now().strftime("%Y-%m-%d"))
-                    if request_count > 20:
+                    if request_count > 30:
                         st.error("Too many requests today. Please try again tomorrow!")
                         return
 
@@ -195,7 +195,7 @@ def main():
                         p.artifacts_system_prompt,
                         p.artifacts_user_prompt.format(title=title, content=content),
                         llm_model="claude-3-5-sonnet-20240620",
-                        temperature=0.8
+                        temperature=0.7
                     )
                     ## Check if it ends with </script> tag, otherwise append output to user prompt and rerun.
                     if not res_str.endswith("</script>"):
@@ -203,7 +203,7 @@ def main():
                             p.artifacts_system_prompt,
                             p.artifacts_user_prompt.format(title=title, content=content) + res_str,
                             llm_model="claude-3-5-sonnet-20240620",
-                            temperature=0.8
+                            temperature=0.7
                         )
 
                     summary = res_str.split("<summary>")[1].split("</summary>")[0].strip()
@@ -218,6 +218,8 @@ def main():
             components.html(html_content, height=700, scrolling=True)
 
         render()
+
+    st.caption("Powered by Claude-3.5-Sonnet 🖤")
 
 
 if __name__ == '__main__':

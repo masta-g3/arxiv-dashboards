@@ -40,6 +40,7 @@ artifacts_user_prompt = """<visualization_info>
 - Scale up or down the axes range to match the domain of your data (e.g.: if your data goes from 95-99, a good range is 90-100, **not** 0-100)
 - Use Sankey diagrams only when truly needed. If you choose to use one, make sure it is interactive and clearly labeled
 - Only use polar grids when the data is multidimensional and the radar chart is the best way to represent it
+- Use treemaps for hierarchical data, and make sure you always include multiple categories
 - Use the principles of Edward Tufte to create clear, informative, and visually appealing visualizations
 - Extract precise conclusions directly from the paper content, and at least one unexpected or interesting finding
 - Explain any new or technical terms in layman's language
@@ -262,7 +263,7 @@ const LanguageSpecificLLMDashboard = () => {{
             React.createElement(TabsTrigger, {{ value: "models" }}, "Models"),
             React.createElement(TabsTrigger, {{ value: "transfer" }}, "Transfer"),
             React.createElement(TabsTrigger, {{ value: "adaptation" }}, "Adaptation"),
-            React.createElement(TabsTrigger, {{ value: "insights" }}, "Insights"),
+            React.createElement(TabsTrigger, {{ value: "conclusion" }}, "Final Remarks"),
             React.createElement(
                 TabsContent,
                 {{ value: "vocabulary" }},
@@ -309,9 +310,9 @@ const LanguageSpecificLLMDashboard = () => {{
             ),
             React.createElement(
                 TabsContent,
-                {{ value: "insights" }},
+                {{ value: "conclusion" }},
                 React.createElement(FindingCard, {{
-                    title: "Key Insights and Practical Applications",
+                    title: "Final Remarks and Practical Applications",
                     description: "Our research on language-specific LLMs reveals several groundbreaking insights with significant practical implications. The power of vocabulary extension, coupled with the unexpected success of adapted monolingual models, suggests a paradigm shift in approaching multilingual NLP tasks. The varying effectiveness of cross-lingual transfer across linguistic aspects highlights the need for tailored strategies in language adaptation. These findings collectively point towards more efficient, adaptable, and robust language models.",
                     chart: React.createElement(InsightSummaryChart),
                     note: "Practical applications include: 1) Developing more resource-efficient NLP systems for low-resource languages, 2) Creating adaptive learning platforms that leverage cross-lingual transfer for rapid language acquisition, and 3) Designing culturally-aware AI assistants capable of nuanced communication across diverse linguistic contexts."
