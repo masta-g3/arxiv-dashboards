@@ -187,7 +187,7 @@ def main():
                 if not script:
                     # Check if we got credits.
                     request_count = u.get_daily_arxiv_request_count(datetime.datetime.now().strftime("%Y-%m-%d"))
-                    if request_count > 30:
+                    if request_count > 50:
                         st.error("Too many requests today. Please try again tomorrow!")
                         return
 
@@ -223,4 +223,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        st.error("An error occurred... Please try again.")
